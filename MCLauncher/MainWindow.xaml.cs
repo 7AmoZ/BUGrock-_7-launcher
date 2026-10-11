@@ -47,7 +47,44 @@ namespace MCLauncher {
         private volatile int _userVersionDownloaderLoginTaskStarted;
         private volatile bool _hasLaunchTask = false;
         private volatile bool _hasGdkExtractTask = false;
+private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+{
+    if (e.ClickCount == 2)
+        MaximizeBtn_Click(sender, e);
+    else
+        DragMove();
+}
 
+private void MinimizeBtn_Click(object sender, RoutedEventArgs e)
+    => WindowState = WindowState.Minimized;
+
+private void MaximizeBtn_Click(object sender, RoutedEventArgs e)
+    => WindowState = WindowState == WindowState.Maximized
+        ? WindowState.Normal
+        : WindowState.Maximized;
+
+private void CloseBtn_Click(object sender, RoutedEventArgs e)
+    => Close();
+
+private static readonly (string Title, string Subtitle)[] _navMeta =
+{
+    ("Release Versions",  "Stable public Minecraft Bedrock releases"),
+    ("Beta Versions",     "Beta channel — may be unstable"),
+    ("Preview Versions",  "Preview / experimental builds"),
+    ("Imported Packages", "Locally imported .appx / .msixvc files"),
+};
+
+private void SetNav(int index)
+{
+    VersionsTabControl.SelectedIndex = index;
+    SectionTitle.Text    = _navMeta[index].Title;
+    SectionSubtitle.Text = _navMeta[index].Subtitle;
+}
+
+private void NavRelease_Click(object sender, RoutedEventArgs e)  => SetNav(0);
+private void NavBeta_Click(object sender, RoutedEventArgs e)     => SetNav(1);
+private void NavPreview_Click(object sender, RoutedEventArgs e)  => SetNav(2);
+private void NavImported_Click(object sender, RoutedEventArgs e) => SetNav(3);
         public MainWindow() {
             Preferences? userPrefs = null;
             if (File.Exists(PREFS_PATH)) {

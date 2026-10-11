@@ -20,12 +20,7 @@ jobs:
         run: nuget restore MCLauncher.sln
 
       - name: Build
-        run: |
-          msbuild MCLauncher.sln `
-            /p:Configuration=Release `
-            /p:Platform="Mixed Platforms" `
-            /m `
-            /nologo
+        run: msbuild MCLauncher.sln /p:Configuration=Release /m /nologo
 
       - name: Collect output
         shell: pwsh

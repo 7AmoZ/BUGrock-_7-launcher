@@ -577,7 +577,7 @@
                                 Click="MaximizeBtn_Click" ToolTip="Maximize"/>
                         <Button Content="✕" Style="{StaticResource BtnClose}"
                                 Click="CloseBtn_Click" ToolTip="Close"
-                                Width="48" CornerRadius="0,10,0,0"/>
+                                Width="48"/>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -602,7 +602,7 @@
                         <!-- Section label -->
                         <TextBlock Grid.Row="0" Text="VERSIONS" FontSize="10" FontWeight="Bold"
                                    Foreground="{StaticResource TextMuted}"
-                                   Margin="26,18,0,8" 
+                                   Margin="26,18,0,8"/>
 
                         <!-- Nav buttons -->
                         <StackPanel Grid.Row="1" Margin="0,4,0,0">
@@ -644,7 +644,7 @@
 
                             <!-- Tools Label -->
                             <TextBlock Text="TOOLS" FontSize="10" FontWeight="Bold"
-                                       Foreground="{StaticResource TextMuted}" Margin="26,0,0,6"
+                                       Foreground="{StaticResource TextMuted}" Margin="26,0,0,6"/>
                                        
 
                             <!-- ⚠ IMPORTANT: تأكد إن أسماء الـ Click handlers دي موجودة في .cs -->

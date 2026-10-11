@@ -85,6 +85,18 @@ private void NavRelease_Click(object sender, RoutedEventArgs e)  => SetNav(0);
 private void NavBeta_Click(object sender, RoutedEventArgs e)     => SetNav(1);
 private void NavPreview_Click(object sender, RoutedEventArgs e)  => SetNav(2);
 private void NavImported_Click(object sender, RoutedEventArgs e) => SetNav(3);
+        // Compatibility handlers for controls in the redesigned XAML.
+        private void MenuItemRefreshVersionList_Click(object sender, RoutedEventArgs e) => MenuItemRefreshVersionListClicked(sender, e);
+        private void MenuItemImportLocalPackage_Click(object sender, RoutedEventArgs e) => ImportButtonClicked(sender, e);
+        private void MenuItemOpenLogFile_Click(object sender, RoutedEventArgs e) => MenuItemOpenLogFileClicked(sender, e);
+        private void MenuItemOpenDataFolder_Click(object sender, RoutedEventArgs e) => MenuItemOpenDataDirClicked(sender, e);
+        private void MenuItemUninstallAll_Click(object sender, RoutedEventArgs e) => MenuItemUninstallAllVersionsClicked(sender, e);
+        private void MenuItemFindUserData_Click(object sender, RoutedEventArgs e) => MenuItemFindMyDataClicked(sender, e);
+        private void MenuItemSetVersionListEndpoint_Click(object sender, RoutedEventArgs e) => MenuItemSetVersionListEndpointClicked(sender, e);
+        private void MenuItemCleanupForStoreInstall_Click(object sender, RoutedEventArgs e) => MenuItemCleanupForStoreInstallClicked(sender, e);
+        private void ShowInstalledVersionsOnlyCheckbox_Checked(object sender, RoutedEventArgs e) => ShowInstalledVersionsOnlyCheckbox_Changed(sender, e);
+        private void ShowInstalledVersionsOnlyCheckbox_Unchecked(object sender, RoutedEventArgs e) => ShowInstalledVersionsOnlyCheckbox_Changed(sender, e);
+
         public MainWindow() {
             Preferences? userPrefs = null;
             if (File.Exists(PREFS_PATH)) {
@@ -102,7 +114,6 @@ private void NavImported_Click(object sender, RoutedEventArgs e) => SetNav(3);
             _versions = new VersionList("versions_uwp.json", IMPORTED_VERSIONS_PATH, versionsApiUWP, this, VersionEntryPropertyChanged, "versions_gdk.json", versionsApiGDK);
 
             InitializeComponent();
-            DeleteAppxAfterDownloadOption.DataContext = this;
             ShowInstalledVersionsOnlyCheckbox.DataContext = this;
 
             var versionListViewRelease = Resources["versionListViewRelease"] as CollectionViewSource;
@@ -111,7 +122,6 @@ private void NavImported_Click(object sender, RoutedEventArgs e) => SetNav(3);
                 e.Accepted = v.VersionType == VersionType.Release && (v.IsInstalled || v.IsStateChanging || !(ShowInstalledVersionsOnlyCheckbox.IsChecked ?? false));
             });
             versionListViewRelease.Source = _versions;
-            ReleaseVersionList.DataContext = versionListViewRelease;
             _versionListViews.Add(versionListViewRelease);
 
             var versionListViewBeta = Resources["versionListViewBeta"] as CollectionViewSource;
@@ -120,7 +130,6 @@ private void NavImported_Click(object sender, RoutedEventArgs e) => SetNav(3);
                 e.Accepted = v.VersionType == VersionType.Beta && (v.IsInstalled || v.IsStateChanging || !(ShowInstalledVersionsOnlyCheckbox.IsChecked ?? false));
             });
             versionListViewBeta.Source = _versions;
-            BetaVersionList.DataContext = versionListViewBeta;
             _versionListViews.Add(versionListViewBeta);
 
             var versionListViewPreview = Resources["versionListViewPreview"] as CollectionViewSource;
@@ -129,7 +138,6 @@ private void NavImported_Click(object sender, RoutedEventArgs e) => SetNav(3);
                 e.Accepted = v.VersionType == VersionType.Preview && (v.IsInstalled || v.IsStateChanging || !(ShowInstalledVersionsOnlyCheckbox.IsChecked ?? false));
             });
             versionListViewPreview.Source = _versions;
-            PreviewVersionList.DataContext = versionListViewPreview;
             _versionListViews.Add(versionListViewPreview);
 
             var versionListViewImported = Resources["versionListViewImported"] as CollectionViewSource;
@@ -139,7 +147,6 @@ private void NavImported_Click(object sender, RoutedEventArgs e) => SetNav(3);
             });
 
             versionListViewImported.Source = _versions;
-            ImportedVersionList.DataContext = versionListViewImported;
             _versionListViews.Add(versionListViewImported);
 
             _userVersionDownloaderLoginTask = new Task(() => {
@@ -151,8 +158,7 @@ private void NavImported_Click(object sender, RoutedEventArgs e) => SetNav(3);
         private async void LoadVersionList() {
             _versions.PrepareForReload();
 
-            LoadingProgressLabel.Content = "Loading GDK versions from cache";
-            LoadingProgressBar.Value = 1;
+            LoadingProgressLabel.Text = "Loading GDK versions from cache";
 
             LoadingProgressGrid.Visibility = Visibility.Visible;
 
@@ -163,7 +169,6 @@ private void NavImported_Click(object sender, RoutedEventArgs e) => SetNav(3);
             }
 
             LoadingProgressLabel.Content = "Loading UWP versions from cache";
-            LoadingProgressBar.Value = 2;
             try {
                 await _versions.LoadFromCacheUWP();
             } catch (Exception e) {
@@ -173,7 +178,6 @@ private void NavImported_Click(object sender, RoutedEventArgs e) => SetNav(3);
             _versions.PrepareForReload();
 
             LoadingProgressLabel.Content = "Downloading new GDK version data";
-            LoadingProgressBar.Value = 3;
             try {
                 await _versions.DownloadVersionsGDK();
             } catch (Exception e) {
@@ -183,7 +187,6 @@ private void NavImported_Click(object sender, RoutedEventArgs e) => SetNav(3);
 
 
             LoadingProgressLabel.Content = "Downloading new UWP version data";
-            LoadingProgressBar.Value = 4;
             try {
                 await _versions.DownloadVersionsUWP();
             } catch (Exception e) {
@@ -192,7 +195,6 @@ private void NavImported_Click(object sender, RoutedEventArgs e) => SetNav(3);
             }
 
             LoadingProgressLabel.Content = "Loading imported versions";
-            LoadingProgressBar.Value = 5;
             await _versions.LoadImported();
 
             LoadingProgressGrid.Visibility = Visibility.Collapsed;
@@ -250,7 +252,7 @@ private void NavImported_Click(object sender, RoutedEventArgs e) => SetNav(3);
 
 
                 var versionEntry = _versions.AddEntry(openFileDlg.SafeFileName, directory, packageType);
-                VersionTabs.SelectedItem = ImportedTab;
+                VersionsTabControl.SelectedIndex = 3;
 
                 bool success = false;
 
@@ -1202,11 +1204,6 @@ private void NavImported_Click(object sender, RoutedEventArgs e) => SetNav(3);
             });
         }
 
-        private void DeleteAppxAfterDownloadCheck_Changed(object sender, RoutedEventArgs e) {
-            UserPrefs.DeleteAppxAfterDownload = DeleteAppxAfterDownloadOption.IsChecked;
-            RewritePrefs();
-        }
-
         private void RewritePrefs() {
             File.WriteAllText(PREFS_PATH, JsonConvert.SerializeObject(UserPrefs));
         }
@@ -1316,14 +1313,7 @@ private void NavImported_Click(object sender, RoutedEventArgs e) => SetNav(3);
             MessageBox.Show("Cleanup completed. You should now be able to install Minecraft from Microsoft Store.", "Cleanup completed");
         }
 
-        private void ShowBetaTabOption_Changed(object sender, RoutedEventArgs e) {
-            UserPrefs.ShowLegacyBetaTab = ShowBetaTabOption.IsChecked;
-            BetaTab.Visibility = UserPrefs.ShowLegacyBetaTab ? Visibility.Visible : Visibility.Collapsed;
-            if (VersionTabs.SelectedItem == BetaTab && BetaTab.Visibility != Visibility.Visible) {
-                VersionTabs.SelectedItem = ReleaseTab;
-            }
-            RewritePrefs();
-        }
+        private void ShowBetaTabOption_Changed(object sender, RoutedEventArgs e) => RewritePrefs();
     }
 
     struct MinecraftPackageFamilies

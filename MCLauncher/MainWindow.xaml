@@ -427,7 +427,7 @@
                             <Border Background="{StaticResource AccentGreenDim}" CornerRadius="4"
                                     Padding="6,2" Margin="10,0,0,0" VerticalAlignment="Center">
                                 <TextBlock Text="INSTALLED" FontSize="9" FontWeight="Bold"
-                                           Foreground="{StaticResource AccentGreen}" LetterSpacing="0.5"/>
+                                           Foreground="{StaticResource AccentGreen}" 
                             </Border>
                         </StackPanel>
                         <TextBlock Text="{Binding DisplayInstallStatus}" FontSize="11"
@@ -602,7 +602,7 @@
                         <!-- Section label -->
                         <TextBlock Grid.Row="0" Text="VERSIONS" FontSize="10" FontWeight="Bold"
                                    Foreground="{StaticResource TextMuted}"
-                                   Margin="26,18,0,8" LetterSpacing="1.5"/>
+                                   Margin="26,18,0,8" 
 
                         <!-- Nav buttons -->
                         <StackPanel Grid.Row="1" Margin="0,4,0,0">
@@ -645,7 +645,7 @@
                             <!-- Tools Label -->
                             <TextBlock Text="TOOLS" FontSize="10" FontWeight="Bold"
                                        Foreground="{StaticResource TextMuted}" Margin="26,0,0,6"
-                                       LetterSpacing="1.5"/>
+                                       
 
                             <!-- ⚠ IMPORTANT: تأكد إن أسماء الـ Click handlers دي موجودة في .cs -->
                             <Button Content="↻  Refresh Versions"    Style="{StaticResource BtnFlat}"

@@ -264,7 +264,7 @@
                                     Background="{TemplateBinding Foreground}" CornerRadius="2"/>
                             <!-- Indeterminate animation -->
                             <Rectangle x:Name="Animation" Fill="{TemplateBinding Foreground}"
-                                       HorizontalAlignment="Left" Width="100" CornerRadius="2">
+           HorizontalAlignment="Left" Width="100">
                                 <Rectangle.Triggers>
                                     <EventTrigger RoutedEvent="Rectangle.Loaded">
                                         <BeginStoryboard>
